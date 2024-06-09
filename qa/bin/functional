@@ -98,6 +98,7 @@ class Exec(object):
         self.code = -1
         self.stdout = b''
         self.stderr = b''
+        self.message = ''
         self._process = None
         self.command = []
 
@@ -130,6 +131,7 @@ class Exec(object):
         print(f'return: {self.code}')
         print(f'stdout: {self.stdout}')
         print(f'stderr: {self.stderr}')
+        print(f'message: {self.message}')
         return False
 
     def collect(self):
@@ -142,13 +144,15 @@ class Exec(object):
 
         signal.signal(signal.SIGALRM, alarm_handler)
         try:
-            signal.alarm(5)
+            signal.alarm(15)
             self.stdout, self.stderr = self._process.communicate()
             self.code = self._process.returncode
             signal.alarm(0)
-        except ValueError:  # I/O operation on closed file
+        except ValueError as exc:  # I/O operation on closed file
+            self.message = str(exc)
             pass
         except Alarm:
+            self.message = str(exc)
             pass
 
     def terminate(self):
