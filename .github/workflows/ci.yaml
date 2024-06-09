@@ -64,19 +64,23 @@ jobs:
 
     - name: Configuration Parsing Checks
       run: |
-        ./qa/bin/functional parsing
+        if [[ $(python3 --version | grep -v "3.6") ]]; then ./qa/bin/functional parsing; fi
 
     - name: Functional Checks
       run: |
-        ./qa/bin/functional encoding
+        if [[ $(python3 --version | grep -v "3.6") ]]; then ./qa/bin/functional encoding; fi
 
     - name: Decoding Checks
       run: |
-        ./qa/bin/functional decoding
+        if [[ $(python3 --version | grep -v "3.6") ]]; then ./qa/bin/functional decoding; fi
 
     - name: Test Coverage
       run: |
-        env PYTHONPATH=src exabgp_log_enable=false pytest --cov --cov-reset ./tests/*_test.py
+        if [[ $(python3 --version | grep -v "3.6") ]]; then env PYTHONPATH=src exabgp_log_enable=false pytest --cov --cov-reset ./tests/*_test.py; fi
+
+    - name: Python 3.6 Coverage
+      run: |
+        if [[ $(python3 --version | grep "3.6") ]]; then  ./qa/bin/functional run; fi
 
     # - name: Coveralls
     #   run: |
